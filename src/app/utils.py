@@ -34,10 +34,12 @@ bor = pd.read_pickle(os.path.join(
     "../spellchecker/models/prefix_tree.pickle",
 ))
 sc = SpellCorrector(lm, err, bor)
-inv = pd.read_pickle(os.path.join(
-    os.path.dirname(__file__),
-    "../../index/buided_index.pickle",
-))
+# inv = pd.read_pickle(os.path.join(
+#     os.path.dirname(__file__),
+#     "../../index/buided_index.pickle",
+# ))
+inv = Index(os.path.join(os.path.dirname(__file__), "../../data/data.csv"))
+inv.build()
 
 
 translation = gettext.translation(
@@ -77,7 +79,7 @@ def search(
     :param query: query
     :param start_date: start_date
     :param end_date: end_date
-    :return: list of televant posts
+    :return: list of relevant posts
     """
     print("Query:", query)
     corrected_query = " & ".join(sc.spellcorrect(query))
@@ -109,5 +111,22 @@ def search(
 
 
 def sort_results(query: str, results: List[Post], sorting_direction: str) -> List[Post]:
-    """Return query results."""
+    """Sort search results.
+
+    :param query: query
+    :param results: search results
+    :param sorting_direction: sorting_direction
+    :return: list of sorted posts
+    """
+    if sorting_direction == "⬇️" + " " + _("date"):
+        results.sort(key=lambda x: x.datetime, reverse=False)
+    elif sorting_direction == "⬆️" + " " + _("date"):
+        results.sort(key=lambda x: x.datetime, reverse=True)
+    else:
+        query_lemmas = set(query.split())
+        results.sort(
+            key=lambda x: len(query_lemmas.intersection(x.text.split())), 
+            reverse=True,
+        )
+
     return results

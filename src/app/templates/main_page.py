@@ -205,8 +205,8 @@ def search_element(post: Post, max_snippet_len: int) -> str:
         <div style="
             text-align: center;
         ">
-            {post.text if len(post.text) <= max_snippet_len else
-             post.text[: max_snippet_len] + "..."}
+            {post.text.replace("*", "") if len(post.text) <= max_snippet_len else
+             post.text[: max_snippet_len].replace("*", "") + "..."}
         </div>
         <br>
         <div style="
