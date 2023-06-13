@@ -7,14 +7,6 @@ from typing import List
 import sys
 import pandas as pd
 from src.spellchecker.spellchecker import SpellCorrector
-from src.search_index.index import Index
-import pandas as pd
-
-# build index
-#Index(os.path.join(os.path.dirname(__file__), "../../data/data.csv"))
-#print("building index")
-#inv.build()
-#pd.to_pickle(inv, 'buided_index.pickle')
 
 # build spellchecker
 sys.path.append(os.path.join(
@@ -34,12 +26,10 @@ bor = pd.read_pickle(os.path.join(
     "../spellchecker/models/prefix_tree.pickle",
 ))
 sc = SpellCorrector(lm, err, bor)
-# inv = pd.read_pickle(os.path.join(
-#     os.path.dirname(__file__),
-#     "../../index/buided_index.pickle",
-# ))
-inv = Index(os.path.join(os.path.dirname(__file__), "../../data/data.csv"))
-inv.build()
+inv = pd.read_pickle(os.path.join(
+    os.path.dirname(__file__),
+    "../../index/buided_index.pickle",
+))
 
 
 translation = gettext.translation(
@@ -125,7 +115,7 @@ def sort_results(query: str, results: List[Post], sorting_direction: str) -> Lis
     else:
         query_lemmas = set(query.split())
         results.sort(
-            key=lambda x: len(query_lemmas.intersection(x.text.split())), 
+            key=lambda x: len(query_lemmas.intersection(x.text.split())),
             reverse=True,
         )
 

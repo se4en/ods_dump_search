@@ -194,6 +194,14 @@ def search_element(post: Post, max_snippet_len: int) -> str:
     :rtype: str
     """
     _number_of_comments = _("Number of comments")
+    clean_text = post.text
+    replace_dict = {
+        "*": "",
+        "<": "",
+        ">": "",
+    }
+    for k, v in replace_dict.items():
+        clean_text = clean_text.replace(k, v)
     return f"""
     <div style="
         box-sizing: border-box;
@@ -205,8 +213,8 @@ def search_element(post: Post, max_snippet_len: int) -> str:
         <div style="
             text-align: center;
         ">
-            {post.text.replace("*", "") if len(post.text) <= max_snippet_len else
-             post.text[: max_snippet_len].replace("*", "") + "..."}
+            {clean_text if len(clean_text) <= max_snippet_len else
+             clean_text[: max_snippet_len] + "..."}
         </div>
         <br>
         <div style="
